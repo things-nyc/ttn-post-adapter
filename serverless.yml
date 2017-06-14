@@ -1,0 +1,24 @@
+service: ttn-post-adapter
+
+frameworkVersion: ">=1.2.0 <2.0.0"
+
+provider:
+  name: aws
+  runtime: nodejs4.3
+
+functions:
+  index:
+    handler: handler.dispatch
+    events:
+      - http:
+          path: rename
+          method: post
+      - http:
+          path: opensensors
+          method: post
+      - http:
+          path: slicingdice
+          method: post
+      - http:
+          path: pyroclast
+          method: post
