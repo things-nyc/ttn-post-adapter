@@ -40,16 +40,15 @@ It won't work without it (example: `https://realtime.opensensors.io/v1/topics//u
 an entity insertion.
 ```json
 {
-  "device-id": {
-    "device-name": "device-name",
+  "my-device-id": {
+    "device-name": "my device name",
     "temperature": [
         {
             "value": 25,
             "date": "2017-05-26T12:54:12Z"
         }
     ],
-    "table": "sensor-data",
-    "database": "sensors"
+    "table": "sensor-data"
   },
   "auto-create": ["table", "column"]
 }
@@ -105,7 +104,7 @@ npm install serverless -g
 ```
 - If using AWS IAM Access Management (as opposed to using your main Amazon
   account credentials), you will need to add permissions that allow Serverless
-  to do its job. See [below](#AWS-IAM-Policies) for details.
+  to do its job. See [below](#aws-iam-policies) for details.
 - Clone this repo to your local machine
 
 ## Deploy
@@ -159,18 +158,30 @@ The following command lines assume you have defined the appropriate variables
 in a file called `.env`. (I do that and include it in .gitignore in order to
 avoid accidentally posting app keys to a public repo.)
 
-> Make sure to include at least `SLS_DEBUG="'*'"` in the `.env` file in order to
-see debug output from your code when you run it locally.
+My `.env` file looks something like this:
 
+    OPENSENSORS_TOPIC_URL=https://realtime.opensensors.io/v1/topics//users/username/topicpath/temperature?client-id=XXXX&password=XXXXXXXX
+    OPENSENSORS_AUTH_HEADER="api-key <uuid key>"
+    SLICINGDICE_AUTH_HEADER=<very long key>
     PYROCLAST_TOPIC_URL=https://api.us-east-1.pyroclast.io/v1/topics/topic-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/produce
-    PYROCLAST_AUTH_HEADER=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    PYROCLAST_AUTH_HEADER=<uuid key>
     SLS_DEBUG="'*'"
+
+> Make sure to include at least the Serverless debug flag `SLS_DEBUG="'*'"`
+in the `.env` file in order to see debug output from your code when you
+run it locally.
 
 > The ```( . .env ; env -S "`cat .env`" command args )``` sucks vars out of a
 file and makes them available both on the command line and in the execution environment.
 
-> Also, you could skip some of the nasty escaping below by putting your data
+> I couldn't use single quotes below because they prevent $VAR expansion.
+I wanted a command that could be copied directly from this document
+and pasted into the terminal without exposing any of my private keys.
+
+> You could skip one level of escaping below by putting your data
 in a file and passing it in with `serverless invoke --path data.json`.
+You lose $VAR expansion, but as long as you're not committing the doc to
+a repo your keys are as safe there as they are in the `.env` file.
 
 > Lastly, without the `local` parameter, `serverless invoke` invokes the
 deployed version of the function on AWS.
@@ -180,7 +191,7 @@ OpenSensors test
     ( . .env ; env -S "`cat .env`" serverless invoke local --log --function index \
       --data "{\"body\": \"{\\\"payload_fields\\\": {\\\"temperature\\\": 25}}\", \
       \"queryStringParameters\": {\"dataname\": \"data\", \
-      \"url\": \"$OPENSENSORS_TOPIC_URL?client-id=$OPENSENSORS_DEVICE_ID&password=$OPENSENSORS_DEVICE_PWD\"}, \
+      \"url\": \"$OPENSENSORS_TOPIC_URL\"}, \
       \"headers\": {\"Authorization\": \"$OPENSENSORS_AUTH_HEADER\"}, \"path\": \"/opensensors\"}")
 
   The expected result is
