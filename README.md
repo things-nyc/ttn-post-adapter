@@ -213,55 +213,61 @@ deployed version of the function on AWS.
 
 OpenSensors test
 
-    ( . .env ; env -S "`cat .env`" serverless invoke local --log --function index \
-      --data "{\"body\": \"{\\\"payload_fields\\\": {\\\"temperature\\\": 25}}\", \
-      \"queryStringParameters\": {\"dataname\": \"data\", \
-      \"url\": \"$OPENSENSORS_TOPIC_URL\"}, \
-      \"headers\": {\"Authorization\": \"$OPENSENSORS_AUTH_HEADER\"}, \"path\": \"/opensensors\"}")
+```bash
+( . .env ; env -S "`cat .env`" serverless invoke local --log --function index \
+  --data "{\"body\": \"{\\\"payload_fields\\\": {\\\"temperature\\\": 25}}\", \
+  \"queryStringParameters\": {\"dataname\": \"data\", \
+  \"url\": \"$OPENSENSORS_TOPIC_URL\"}, \
+  \"headers\": {\"Authorization\": \"$OPENSENSORS_AUTH_HEADER\"}, \"path\": \"/opensensors\"}")
+```
 
-  The expected result is
+The expected result is
 
-    ```json
-    {
-        "statusCode": 200,
-        "body": "{\"message\":\"Message sent\"}"
-    }
-    ```
+```json
+{
+    "statusCode": 200,
+    "body": "{\"message\":\"Message sent\"}"
+}
+```
 
 SlicingDice test
 
-    ( . .env ; env -S "`cat .env`" serverless invoke local --log --function index \
-      --data "{\"body\": \"{\\\"metadata\\\":{\\\"time\\\":\\\"2017-06-14T16:15:41.169291958Z\\\"}, \
-      \\\"payload_fields\\\": {\\\"temperature\\\": 26.5}}\", \
-      \"queryStringParameters\": { \
-      \"url\": \"https://api.slicingdice.com/v1/test/insert\"}, \
-      \"headers\": {\"Authorization\": \"$SLICINGDICE_AUTH_HEADER\"}, \"path\": \"/slicingdice\"}")
+```bash
+( . .env ; env -S "`cat .env`" serverless invoke local --log --function index \
+  --data "{\"body\": \"{\\\"metadata\\\":{\\\"time\\\":\\\"2017-06-14T16:15:41.169291958Z\\\"}, \
+  \\\"payload_fields\\\": {\\\"temperature\\\": 26.5}}\", \
+  \"queryStringParameters\": { \
+  \"url\": \"https://api.slicingdice.com/v1/test/insert\"}, \
+  \"headers\": {\"Authorization\": \"$SLICINGDICE_AUTH_HEADER\"}, \"path\": \"/slicingdice\"}")
+```
 
-  The expected result is
+The expected result is
 
-    ```json
-    {
-        "statusCode": 200,
-        "body": "{\"created\":true}"
-    }
-    ```
+```json
+{
+    "statusCode": 200,
+    "body": "{\"status\":\"success\",\"inserted-entities\":1,\"warning\":\"Using TEST endpoint. Remember to change to the api.slicingdice.com/v1/ endpoint before going to production.\",\"inserted-values\":1,\"took\":0.118}"
+}
+```
 
 Pyroclast test
 
-    ( . .env ; env -S "`cat .env`" serverless invoke local --log --function index \
-      --data "{\"body\": \"{\\\"payload_fields\\\": {\\\"temperature\\\": 26.5}}\", \
-      \"queryStringParameters\": {\"dataname\": \"value\", \
-      \"url\": \"$PYROCLAST_TOPIC_URL\"}, \
-      \"headers\": {\"Authorization\": \"$PYROCLAST_AUTH_HEADER\"}, \"path\": \"/pyroclast\"}")
+```bash
+( . .env ; env -S "`cat .env`" serverless invoke local --log --function index \
+  --data "{\"body\": \"{\\\"payload_fields\\\": {\\\"temperature\\\": 26.5}}\", \
+  \"queryStringParameters\": {\"dataname\": \"value\", \
+  \"url\": \"$PYROCLAST_TOPIC_URL\"}, \
+  \"headers\": {\"Authorization\": \"$PYROCLAST_AUTH_HEADER\"}, \"path\": \"/pyroclast\"}")
+```
 
-  The expected result is
+The expected result is
 
-    ```json
-    {
-        "statusCode": 200,
-        "body": "{\"created\":true}"
-    }
-    ```
+```json
+{
+    "statusCode": 200,
+    "body": "{\"created\":true}"
+}
+```
 
 ## AWS IAM Policies
 
