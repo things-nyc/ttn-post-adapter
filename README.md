@@ -90,7 +90,7 @@ access to messages only if you've set that up.
 It should look something like this when you're done:
 ![Integration Settings](images/PyroclastIntegrationSettings.png)
 
-## Setup
+## Local Setup
 
 In order to modify and deploy your own version of the code, you will need to
 perform the following setup steps.
@@ -157,11 +157,12 @@ There are two steps required to add your own adapter for, say, `favoritedb`.
 
 1. Add an section to the `serverless.yml` under the `- events` key specifying
 the path name for your adapter.
-```
-    - http:
-        path: favoritedb
-        method: post
-```
+
+  ```yaml
+      - http:
+          path: favoritedb
+          method: post
+  ```
 
 2. Define your handler function. It must use the same name as your path
 specification to be found by the existing logic.
@@ -169,7 +170,7 @@ specification to be found by the existing logic.
 > common work like parsing the `event.body` to JSON, posting the transformed JSON,
 > and constructing the response object.
 
-  ```
+  ```js
   handler.favoritedb = makeWithModulator(function (event, context, data, cb) {
     // Transform data as appropriate
     cb(null, data);
