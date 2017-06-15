@@ -221,7 +221,7 @@ OpenSensors test
 
   The expected result is
 
-    ```bash
+    ```json
     {
         "statusCode": 200,
         "body": "{\"message\":\"Message sent\"}"
@@ -239,7 +239,7 @@ SlicingDice test
 
   The expected result is
 
-    ```bash
+    ```json
     {
         "statusCode": 200,
         "body": "{\"created\":true}"
@@ -256,7 +256,7 @@ Pyroclast test
 
   The expected result is
 
-    ```bash
+    ```json
     {
         "statusCode": 200,
         "body": "{\"created\":true}"
