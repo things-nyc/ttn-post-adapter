@@ -62,9 +62,8 @@ control processing, so this is likely to change.
 ## Usage
 
 In the TTN Console for your app, you set up an HTTP Integration that points to
-the Lambda function as the URL to post to. Included in the URL is a `url`
-parameter that indicates the cloud database URL that the transformed JSON
-should be posted to.
+the Lambda function. A parameter on that URL specifies the destination where
+the transformed JSON should be posted.
 
 The `Authorization` key specified in the TTN HTTP Integration is passed through
 to the ultimate database API POST. Therefore you don't have to embed a key in
@@ -151,6 +150,31 @@ to a more permanent environment, like `production` or `v1`. To do that, simply
 set the stage on the deploy command line.
 
 `serverless --stage v1 deploy`
+
+## Adding your own handler
+
+There are two steps required to add your own adapter for, say, `favoritedb`.
+
+1. Add an section to the `serverless.yml` under the `- events` key specifying
+the path name for your adapter.
+```
+    - http:
+        path: favoritedb
+        method: post
+```
+
+2. Define your handler function. It must use the same name as your path
+specification to be found by the existing logic.
+> All current handlers use the `makeWithModulator` function to perform
+> common work like parsing the `event.body` to JSON, posting the transformed JSON,
+> and constructing the response object.
+
+  ```
+  handler.favoritedb = makeWithModulator(function (event, context, data, cb) {
+    // Transform data as appropriate
+    cb(null, data);
+  });
+  ```
 
 ## Testing from the command line
 

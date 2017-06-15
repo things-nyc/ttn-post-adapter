@@ -58,7 +58,9 @@ function wrapData(data, fieldname) {
   return newdata;
 }
 
-const rename = makeWithModulator(function (event, context, data, cb) {
+var handlers = {}
+
+handlers.rename = makeWithModulator(function (event, context, data, cb) {
   const rename = event.queryStringParameters.dataname;
   if (rename) {
     cb(null, wrapData(data, rename));
@@ -68,7 +70,7 @@ const rename = makeWithModulator(function (event, context, data, cb) {
   }
 });
 
-const opensensors = makeWithModulator(function (event, context, data, cb) {
+handlers.opensensors = makeWithModulator(function (event, context, data, cb) {
   // OpenSensors.io required a text "data" field and NO other fields in JSON
   const newdata = {
     data: JSON.stringify(data.payload_fields)
@@ -76,7 +78,7 @@ const opensensors = makeWithModulator(function (event, context, data, cb) {
   cb(null, newdata);
 });
 
-const slicingdice = makeWithModulator(function (event, context, data, cb) {
+handlers.slicingdice = makeWithModulator(function (event, context, data, cb) {
   const entity = data.hardware_serial;
 
   var newdata = {
@@ -96,22 +98,16 @@ const slicingdice = makeWithModulator(function (event, context, data, cb) {
   cb(null, newdata);
 });
 
-const pyroclast = makeWithModulator(function (event, context, data, cb) {
+handlers.pyroclast = makeWithModulator(function (event, context, data, cb) {
   // Pyroclast will take the whole message under "value"
   cb(null, wrapData(data, "value"))
 });
 
-const dispatchMap = {
-  "/rename": rename,
-  "/opensensors": opensensors,
-  "/slicingdice": slicingdice,
-  "/pyroclast": pyroclast
-}
-
 module.exports.dispatch = function(event, context, callback) {
   const path = event.path;
-  if (path in dispatchMap) {
-    const fn = dispatchMap[path];
+  const handler = path.substring(1);
+  if (handler in handlers) {
+    const fn = handlers[handler];
     fn(event, context, callback);
   }
   else {
