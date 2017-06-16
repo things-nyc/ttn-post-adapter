@@ -7,8 +7,15 @@ layout: Doc
 
 This project demonstrates how to connect the TTN HTTP Integration to
 work with a wide variety of cloud data services *without* running your own server.
-It uses [AWS Lambda](https://aws.amazon.com/lambda/) to host a conversion and
-relay function and the [Serverless](https://serverless.com/)
+The current adapter supports
+[Adafruit IO](https://io.adafruit.com),
+[OpenSensors](https://www.opensensors.io/),
+[SlicingDice](https://slicingdice.com/),
+and [Pyroclast](http://pyroclast.io/).
+
+The service uses [AWS Lambda](https://aws.amazon.com/lambda/) to host a
+conversion and relay function and the
+[Serverless](https://serverless.com/)
 command line tools to simplify deployment.
 
 The advantages of going serverless are cost and capacity. At current
@@ -59,7 +66,8 @@ the `value` key. Other root level keys are ignored, though the the point of
 adding a wrapping layer was likely to support adding keys at the root to
 control processing, so this is likely to change.
 - [Adafruit IO](https://io.adafruit.com) accepts a JSON object with `value`
-and `created_at` fields. The REST URL includes the username and feed name.
+and `created_at` fields. The REST URL includes the username and feed name,
+like `https://io.adafruit.com/api/v2/username/feeds/feedname/data`.
 Also, Adafruit uses an `X-AIO-Key` instead of `Authorization`.
 
 ## Usage
@@ -143,6 +151,7 @@ endpoints:
   POST - https://szrf8jm4nc.execute-api.us-east-1.amazonaws.com/dev/opensensors
   POST - https://szrfv8jm4nc.execute-api.us-east-1.amazonaws.com/dev/slicingdice
   POST - https://szrf8jm4nc.execute-api.us-east-1.amazonaws.com/dev/pyroclast
+  POST - https://szuv8jm4nc.execute-api.us-east-1.amazonaws.com/dev/adafruit
 functions:
   ttn-post-adapter-dev-index: arn:aws:lambda:us-east-1:372342378620:function:ttn-post-adapter-dev-index
 ```
@@ -288,7 +297,13 @@ The expected result is
 ```json
 {
     "statusCode": 200,
-    "body": "{\"created\":true}"
+    "body": "{
+      \"id\":\"0DKT4Y7X3CGCV1E262FXSM76SZ\",
+      \"value\":\"26.5\",\"feed_id\":682645,
+      \"created_at\":\"2017-06-14T16:15:41Z\",
+      \"location\":null,\"lat\":null,\"lon\":null,\"ele\":null,
+      \"created_epoch\":1497456941,
+      \"expiration\":\"2017-07-16T06:14:12Z\"}"
 }
 ```
 
