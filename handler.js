@@ -3,23 +3,29 @@
 var _ = require('underscore')
 var fetch = require('node-fetch')
 
-function relayPost(url, authorization, data, callback) {
+function relayPostComplete(method, url, header, authorization, data, callback) {
+  var headers = {
+    'Accept': "application/json, text/plain, */*",
+    'Content-Type': "application/json"
+  }
+  headers[header] = authorization;
   fetch(url, {
-    method: 'post',
-    headers: {
-      'Accept': "application/json, text/plain, */*",
-      'Content-Type': "application/json",
-      'Authorization': authorization
-    },
+    method: method,
+    headers: headers,
     body: JSON.stringify(data)
-  }).then(function(res) { return res.json(); })
+  }).then(function(res) {
+      if (res.status==200) {
+        return res.json();
+      }
+
+      console.log(res);
+      console.log(res.body);
+      throw new Error(res.body);
+    })
     .then(function(res) {
             console.log(res);
             const response = {
               statusCode: 200,
-              // headers: {
-              //   "x-custom-header" : "My Header Value"
-              // },
               body: JSON.stringify(res)
             };
 
@@ -29,6 +35,10 @@ function relayPost(url, authorization, data, callback) {
       console.error(err);
       callback(err);
     });
+}
+
+function relayPost(url, authorization, data, callback) {
+  relayPost('post', url, 'Authorization', authorization, data, callback);
 }
 
 function makeWithModulator(mod) {
@@ -104,42 +114,24 @@ handlers.pyroclast = makeWithModulator(function (event, context, data, cb) {
 });
 
 handlers.adafruit = function(event, context, callback) {
-  var mqtt = require('mqtt');
+
+  console.log(event); // Contains incoming request data (e.g., query params, headers and more)
+
   var data = JSON.parse(event.body);
-  const username = event.queryStringParameters.username;
-  const feed = event.queryStringParameters.feed;
+  const url = event.queryStringParameters.url;
   const field = event.queryStringParameters.field;
   var authorization = null;
   if (event.headers) {
     authorization = event.headers["Authorization"];
   }
-  var client  = mqtt.connect('mqtt://io.adafruit.com', {
-    username: username,
-    password: authorization,
-    protocolId: 'MQIsdp',
-    protocolVersion: 3
-  });
 
-  client.on('error', function(err) {
-    client.end();
-    callback(err);
-  });
-  client.on('connect', function (connack) {
-    console.log("MQTT connected", connack);
-    client.publish("" + username + '/feeds/' + feed, "" + data.payload_fields[field], function(err) {
-      client.end();
-      if (err) {
-        return callback(new Error(err));
-      }
-
-      const response = {
-        statusCode: 200,
-        body: JSON.stringify({"created": true})
-      };
-
-      callback(null, response);
-    });
-  });
+  // console.log("Before:", data);
+  const moddata = {
+    "created_at": data.metadata.time,
+    "value": "" + data.payload_fields[field]
+  }
+  // console.log("After:", moddata);
+  relayPostComplete('post', url, 'X-AIO-Key', authorization, moddata, callback);
 }
 
 module.exports.dispatch = function(event, context, callback) {

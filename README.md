@@ -58,8 +58,9 @@ object has to be of the form `{"value": data-object}` with your data under
 the `value` key. Other root level keys are ignored, though the the point of
 adding a wrapping layer was likely to support adding keys at the root to
 control processing, so this is likely to change.
-- [Adafruit IO](https://io.adafruit.com) accepts MQTT connections. This
-adapter establishes a connection, publishes a value, and closes the connection.
+- [Adafruit IO](https://io.adafruit.com) accepts a JSON object with `value`
+and `created_at` fields. The REST URL includes the username and feed name.
+Also, Adafruit uses an `X-AIO-Key` instead of `Authorization`.
 
 ## Usage
 
@@ -275,9 +276,10 @@ Adafruit test
 
 ```bash
 ( . .env ; env -S "`cat .env`" serverless invoke local --log --function index \
-  --data "{\"body\": \"{\\\"payload_fields\\\": {\\\"temperature\\\": 26.5}}\", \
-  \"queryStringParameters\": {\"feed\": \"temperature\", \"field\": \"temperature\",\
-  \"username\": \"$ADAFRUIT_USERNAME\"}, \
+  --data "{\"body\": \"{\\\"metadata\\\":{\\\"time\\\":\\\"2017-06-14T16:15:41.169291958Z\\\"}, \
+  \\\"payload_fields\\\": {\\\"temperature\\\": 26.5}}\", \
+  \"queryStringParameters\": {\"field\": \"temperature\", \
+  \"url\": \"$ADAFRUIT_URL\"}, \
   \"headers\": {\"Authorization\": \"$ADAFRUIT_AUTH_HEADER\"}, \"path\": \"/adafruit\"}")
 ```
 
