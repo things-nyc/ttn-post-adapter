@@ -309,79 +309,42 @@ The expected result is
 
 ## AWS IAM Policies
 
-This is the annoying part that I haven't yet figured out how to simplify.
+The serverless tools run under an AWS user identity. Best practice is to
+use the IAM service to create a new user with restricted access to services
+and resources.
 
-In order to run `serverless deploy` successfully, I had to add the following
-policies to my IAM user:
+The following script will create a user and apply the policies required to
+successfully run `serverless deploy`.
 
-- AWS Managed Policies
-  - AWSLambdaFullAccess
-  - AmazonAPIGatewayInvokeFullAccess
-  - AmazonAPIGatewayPushToCloudWatchLogs
-  - AmazonAPIGatewayAdministrator
-  - AWSCloudFormationReadOnlyAccess
-- Task specific policies
-  - basic-logging
-  ```json
-  {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "logs:CreateLogGroup",
-                "logs:CreateLogStream",
-                "logs:PutLogEvents"
-            ],
-            "Resource": "arn:aws:logs:*:*:*"
-        }
-    ]
-  }
-  ```
-  - cloudformation-Create-Update-Stack
-  ```json
-  {
-      "Version": "2012-10-17",
-      "Statement": [
-          {
-              "Sid": "Stmt1486755016000",
-              "Effect": "Allow",
-              "Action": [
-                  "cloudformation:CreateStack",
-                  "cloudformation:UpdateStack"
-              ],
-              "Resource": [
-                  "arn:aws:cloudformation:us-east-1:425789076871:stack/ttn-post-adapter-*/*"
-              ]
-          }
-      ]
-  }
-  ```
-  - iam-GetRole-CreateRole-all
-  ```json
-  {
-      "Version": "2012-10-17",
-      "Statement": [
-          {
-              "Sid": "Stmt1486755598000",
-              "Effect": "Allow",
-              "Action": [
-                  "iam:GetRole",
-                  "iam:CreateRole",
-                  "iam:DeleteRole",
-                  "iam:PutRolePolicy"
-              ],
-              "Resource": [
-                  "*"
-              ]
-          }
-      ]
-  }
-  ```
+1. Log in as your primary AWS identity (using `aws configure`) Alternatively,
+you could use any identity with sufficient permission to perform these
+policy changes. (Permissions defined in policies/IAMPolicySetting.json)
+2. Run the script using whatever name you prefer instead of TTNPostUsername
+```bash
+IAMUSER=TTNPostUsername
+aws iam create-user --user-name $IAMUSER
+aws iam attach-user-policy --policy-arn "arn:aws:iam::aws:policy/AWSLambdaFullAccess" --user-name $IAMUSER
+aws iam attach-user-policy --policy-arn "arn:aws:iam::aws:policy/AmazonAPIGatewayInvokeFullAccess" --user-name $IAMUSER
+aws iam attach-user-policy --policy-arn "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs" --user-name $IAMUSER
+aws iam attach-user-policy --policy-arn "arn:aws:iam::aws:policy/AmazonAPIGatewayAdministrator" --user-name $IAMUSER
+aws iam attach-user-policy --policy-arn "arn:aws:iam::aws:policy/AWSCloudFormationReadOnlyAccess" --user-name $IAMUSER
+aws iam put-user-policy --policy-name ServerlessLogs --policy-document file://policies/ServerlessLogs.json --user-name $IAMUSER
+aws iam put-user-policy --policy-name ServerlessCloudFormation --policy-document file://policies/ServerlessCloudFormation.json --user-name $IAMUSER
+aws iam put-user-policy --policy-name ServerlessIAM --policy-document file://policies/ServerlessIAM.json --user-name $IAMUSER
+```
+3. Use `aws configure` again and set the new user security credentials.
+This causes you to begin interacting with AWS as the new user identity.
+You can find the credentials under the Security tab in the
+[AWS IAM Console](https://console.aws.amazon.com/iam/home#/users).
+![AWS IAM Identity Security](images/IAMUserConsole.png)
+4. Now run `serverless deploy`
+
 
 ## Document History
 
 - 2017-06-14 - Initial version
+- 2017-06-15 - Added Adafruit IO database adapter
+- 2017-06-16 - Added scripts for policy setting
 
 ## Copyright
 

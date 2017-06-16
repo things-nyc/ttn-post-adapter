@@ -1,0 +1,18 @@
+{
+  "Version" : "2012-10-17",
+  "Statement": [{
+    "Action": [
+      "iam:AttachUserPolicy",
+      "iam:PutUserPolicy"
+    ],
+    "Effect": "Allow",
+    "Resource": [
+      "arn:aws:iam::XXXXXXXXXXX:user/UUUUUUUU" <- Replace with ARN of the serverless user you are creating. When you attmept to create the user and fail, it will show the ARN.
+    ],
+    "Condition": {
+      "Bool": {
+        "aws:SecureTransport": "True"
+      }
+    }
+  }]
+}
