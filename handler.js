@@ -120,6 +120,10 @@ handlers.adafruit = function(event, context, callback) {
     protocolVersion: 3
   });
 
+  client.on('error', function(err) {
+    client.end();
+    callback(err);
+  });
   client.on('connect', function (connack) {
     console.log("MQTT connected", connack);
     client.publish("" + username + '/feeds/' + feed, "" + data.payload_fields[field], function(err) {
