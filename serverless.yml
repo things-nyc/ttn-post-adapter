@@ -22,3 +22,6 @@ functions:
       - http:
           path: pyroclast
           method: post
+      - http:
+          path: adafruit
+          method: post

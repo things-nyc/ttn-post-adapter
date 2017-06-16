@@ -1,14 +1,15 @@
 {
   "name": "ttn-post-adapter",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Serverless adapter to connect TTN to cloud databases.",
   "author": "Frank Leon Rose",
   "license": "MIT",
-  "repository" : {
-    "type" : "git",
-    "url" : "https://github.com/npm/npm.git"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/things-nyc/ttn-post-adapter.git"
   },
   "dependencies": {
+    "mqtt": "^2.8.2",
     "node-fetch": "^1.7.1",
     "underscore": "*"
   }

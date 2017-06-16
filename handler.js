@@ -103,6 +103,41 @@ handlers.pyroclast = makeWithModulator(function (event, context, data, cb) {
   cb(null, wrapData(data, "value"))
 });
 
+handlers.adafruit = function(event, context, callback) {
+  var mqtt = require('mqtt');
+  var data = JSON.parse(event.body);
+  const username = event.queryStringParameters.username;
+  const feed = event.queryStringParameters.feed;
+  const field = event.queryStringParameters.field;
+  var authorization = null;
+  if (event.headers) {
+    authorization = event.headers["Authorization"];
+  }
+  var client  = mqtt.connect('mqtt://io.adafruit.com', {
+    username: username,
+    password: authorization,
+    protocolId: 'MQIsdp',
+    protocolVersion: 3
+  });
+
+  client.on('connect', function (connack) {
+    console.log("MQTT connected", connack);
+    client.publish("" + username + '/feeds/' + feed, "" + data.payload_fields[field], function(err) {
+      client.end();
+      if (err) {
+        return callback(new Error(err));
+      }
+
+      const response = {
+        statusCode: 200,
+        body: JSON.stringify({"created": true})
+      };
+
+      callback(null, response);
+    });
+  });
+}
+
 module.exports.dispatch = function(event, context, callback) {
   const path = event.path;
   const handler = path.substring(1);

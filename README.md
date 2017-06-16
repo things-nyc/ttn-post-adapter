@@ -58,6 +58,8 @@ object has to be of the form `{"value": data-object}` with your data under
 the `value` key. Other root level keys are ignored, though the the point of
 adding a wrapping layer was likely to support adding keys at the root to
 control processing, so this is likely to change.
+- [Adafruit IO](https://io.adafruit.com) accepts MQTT connections. This
+adapter establishes a connection, publishes a value, and closes the connection.
 
 ## Usage
 
@@ -258,6 +260,25 @@ Pyroclast test
   \"queryStringParameters\": {\"dataname\": \"value\", \
   \"url\": \"$PYROCLAST_TOPIC_URL\"}, \
   \"headers\": {\"Authorization\": \"$PYROCLAST_AUTH_HEADER\"}, \"path\": \"/pyroclast\"}")
+```
+
+The expected result is
+
+```json
+{
+    "statusCode": 200,
+    "body": "{\"created\":true}"
+}
+```
+
+Adafruit test
+
+```bash
+( . .env ; env -S "`cat .env`" serverless invoke local --log --function index \
+  --data "{\"body\": \"{\\\"payload_fields\\\": {\\\"temperature\\\": 26.5}}\", \
+  \"queryStringParameters\": {\"feed\": \"temperature\", \"field\": \"temperature\",\
+  \"username\": \"$ADAFRUIT_USERNAME\"}, \
+  \"headers\": {\"Authorization\": \"$ADAFRUIT_AUTH_HEADER\"}, \"path\": \"/adafruit\"}")
 ```
 
 The expected result is
