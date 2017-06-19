@@ -189,7 +189,13 @@ specification to be found by the existing logic.
   });
   ```
 
-## Testing from the command line
+## Testing
+
+When you add your own handler, add a corresponding test in
+`test/handler.test.js`. Run tests at the command line using `npm test` to
+make sure you haven't broken anything.
+
+## Invoking the Lambda function from the command line
 
 The following command lines assume you have defined the appropriate variables
 in a file called `.env`. (I do that and include it in .gitignore in order to
@@ -223,7 +229,7 @@ a repo your keys are as safe there as they are in the `.env` file.
 > Lastly, without the `local` parameter, `serverless invoke` invokes the
 deployed version of the function on AWS.
 
-OpenSensors test
+OpenSensors invocation
 
 ```bash
 ( . .env ; env -S "`cat .env`" serverless invoke local --log --function index \
@@ -242,7 +248,7 @@ The expected result is
 }
 ```
 
-SlicingDice test
+SlicingDice invocation
 
 ```bash
 ( . .env ; env -S "`cat .env`" serverless invoke local --log --function index \
@@ -263,7 +269,7 @@ The expected result is
 }
 ```
 
-Pyroclast test
+Pyroclast invocation
 
 ```bash
 ( . .env ; env -S "`cat .env`" serverless invoke local --log --function index \
@@ -281,7 +287,7 @@ The expected result is
 }
 ```
 
-Adafruit test
+Adafruit invocation
 
 ```bash
 ( . .env ; env -S "`cat .env`" serverless invoke local --log --function index \
