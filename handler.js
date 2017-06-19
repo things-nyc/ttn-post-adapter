@@ -3,8 +3,14 @@
 var _ = require('underscore')
 module.exports.fetch = require('node-fetch') // Use export so that it can be stubbed
 
+function isBlankString(s) {
+  return (s==null || _.isUndefined(s) || s=="");
+}
 
 function relayPostComplete(method, url, header, authorization, data, callback) {
+  if (isBlankString(url)) {
+    callback(new Error(`Invalid URL query parameter '${url}'`));
+  }
   var headers = {
     'Accept': "application/json, text/plain, */*",
     'Content-Type': "application/json"

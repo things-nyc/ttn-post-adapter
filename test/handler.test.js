@@ -146,4 +146,20 @@ describe('ttn-post-adapter', function() {
         expect(err.message).to.equal("Unknown path '/unknown'");
       });
   });
+
+  it('unspecified URL', function() {
+    const event = {
+      "path": "/adafruit",
+      "body": JSON.stringify(postData),
+      "queryStringParameters": {
+        field: "temperature",
+        url: null
+      }
+    };
+    return LambdaTester(myLambda.dispatch)
+      .event(event)
+      .expectError( ( err ) => {
+        expect(err.message).to.equal("Invalid URL query parameter 'null'");
+      });
+  });
 });
