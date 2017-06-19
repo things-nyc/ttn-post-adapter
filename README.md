@@ -3,6 +3,7 @@ title: Serverless TTN POST Adapter
 description: Adapts the TTN HTTP Integration for use with other cloud data services.
 layout: Doc
 -->
+[![Build Status](https://travis-ci.org/things-nyc/ttn-post-adapter.svg?branch=master)](https://travis-ci.org/things-nyc/ttn-post-adapter)
 # Serverless TTN POST Adapter
 
 This project demonstrates how to connect the TTN HTTP Integration to
