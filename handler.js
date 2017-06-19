@@ -39,7 +39,7 @@ function relayPostComplete(method, url, header, authorization, data, callback) {
 }
 
 function relayPost(url, authorization, data, callback) {
-  relayPost('post', url, 'Authorization', authorization, data, callback);
+  relayPostComplete('post', url, 'Authorization', authorization, data, callback);
 }
 
 function makeWithModulator(mod) {
