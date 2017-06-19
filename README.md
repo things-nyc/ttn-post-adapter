@@ -6,16 +6,18 @@ layout: Doc
 [![Build Status](https://travis-ci.org/things-nyc/ttn-post-adapter.svg?branch=master)](https://travis-ci.org/things-nyc/ttn-post-adapter)
 # Serverless TTN POST Adapter
 
-This project demonstrates how to connect the TTN HTTP Integration to
-work with a wide variety of cloud data services *without* running your own server.
-The current adapter supports
+> Read this document on [Github Pages](https://things-nyc.github.io/ttn-post-adapter/).
+
+This project demonstrates how to connect an application configured on
+[The Things Network (TTN) console](https://console.thethingsnetwork.org/) to a variety of cloud data services
+*without* running your own server.
+The current adapter supports data services from
 [Adafruit IO](https://io.adafruit.com),
 [OpenSensors](https://www.opensensors.io/),
 [SlicingDice](https://slicingdice.com/),
 and [Pyroclast](http://pyroclast.io/).
 
-The service uses [AWS Lambda](https://aws.amazon.com/lambda/) to host a
-conversion and relay function and the
+The adapter described herein uses [AWS Lambda](https://aws.amazon.com/lambda/) to host a conversion and relay function and the
 [Serverless](https://serverless.com/)
 command line tools to simplify deployment.
 
@@ -326,7 +328,7 @@ successfully run `serverless deploy`.
 1. Log in as your primary AWS identity (using `aws configure`) Alternatively,
 you could use any identity with sufficient permission to perform these
 policy changes. (Permissions defined in policies/IAMPolicySetting.json)
-2. Run the script using whatever name you prefer instead of TTNPostUsername
+2. Run the commands below using whatever name you prefer instead of "TTNPostUsername" in the first line.
 ```bash
 IAMUSER=TTNPostUsername
 aws iam create-user --user-name $IAMUSER
@@ -352,6 +354,7 @@ You can find the credentials under the Security tab in the
 - 2017-06-14 - Initial version
 - 2017-06-15 - Added Adafruit IO database adapter
 - 2017-06-16 - Added scripts for policy setting
+- 2017-06-18 - Added instructions for running automated tests and Travis build status
 
 ## Copyright
 
