@@ -1,7 +1,8 @@
 'use strict';
 
 var _ = require('underscore')
-var fetch = require('node-fetch')
+module.exports.fetch = require('node-fetch') // Use export so that it can be stubbed
+
 
 function relayPostComplete(method, url, header, authorization, data, callback) {
   var headers = {
@@ -9,7 +10,7 @@ function relayPostComplete(method, url, header, authorization, data, callback) {
     'Content-Type': "application/json"
   }
   headers[header] = authorization;
-  fetch(url, {
+  module.exports.fetch(url, {
     method: method,
     headers: headers,
     body: JSON.stringify(data)

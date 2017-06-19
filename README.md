@@ -247,6 +247,7 @@ SlicingDice test
 ```bash
 ( . .env ; env -S "`cat .env`" serverless invoke local --log --function index \
   --data "{\"body\": \"{\\\"metadata\\\":{\\\"time\\\":\\\"2017-06-14T16:15:41.169291958Z\\\"}, \
+  \\\"hardware_serial\\\": \\\"test-device-id\\\", \
   \\\"payload_fields\\\": {\\\"temperature\\\": 26.5}}\", \
   \"queryStringParameters\": { \
   \"url\": \"https://api.slicingdice.com/v1/test/insert\"}, \
@@ -267,8 +268,7 @@ Pyroclast test
 ```bash
 ( . .env ; env -S "`cat .env`" serverless invoke local --log --function index \
   --data "{\"body\": \"{\\\"payload_fields\\\": {\\\"temperature\\\": 26.5}}\", \
-  \"queryStringParameters\": {\"dataname\": \"value\", \
-  \"url\": \"$PYROCLAST_TOPIC_URL\"}, \
+  \"queryStringParameters\": {\"url\": \"$PYROCLAST_TOPIC_URL\"}, \
   \"headers\": {\"Authorization\": \"$PYROCLAST_AUTH_HEADER\"}, \"path\": \"/pyroclast\"}")
 ```
 
